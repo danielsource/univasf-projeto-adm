@@ -1,4 +1,4 @@
-ERP para sistema PDV fictício para disciplina de Administração para Ciência da Computação na Univasf.
+""ERP"" para um sistema PDV fictício, desenvolvido para a disciplina de Administração do curso de Ciência da Computação na Univasf.
 
 Usuários padrões de exemplo:
 	AcessLevel: ADMIN

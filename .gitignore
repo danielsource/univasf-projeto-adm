@@ -1,4 +1,3 @@
-*.swp
 .venv*/
 __pycache__/
 instance/
