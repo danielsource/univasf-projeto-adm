@@ -261,8 +261,8 @@ msgid "Username"
 msgstr "ユーザー名"
 
 #: templates/index-admin.html:13 templates/register.html:15
-msgid "Access level"
-msgstr "アクセスレベル"
+msgid "Role"
+msgstr "役割"
 
 #: templates/client/clients.html:12 templates/index-admin.html:14
 #: templates/occurrence/occurrences.html:13 templates/order/add.html:14

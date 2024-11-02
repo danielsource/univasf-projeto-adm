@@ -4,13 +4,13 @@
 <nav>
 	<a href="{{ url_for('.logout_page') }}">{{ _('Logout') }}</a>
 </nav>
-{% if current_user.access_level == AccessLevel.MANAGER %}
+{% if current_user.role == Role.MANAGER %}
 <ul>
 	<li><a href="{{ url_for('product.start_page') }}">{{ _('Products') }}</li>
 	<li><a href="{{ url_for('client.start_page') }}">{{ _('Clients') }}</li>
 	<li><a href="{{ url_for('occurrence.start_page') }}">{{ _('Occurrences') }}</li>
 </ul>
-{% elif current_user.access_level == AccessLevel.OPERATOR %}
+{% elif current_user.role == Role.OPERATOR %}
 <ul>
 	<li><a href="{{ url_for('order.start_page') }}">{{ _('Orders') }}</li>
 	<li><a href="{{ url_for('client.start_page') }}">{{ _('Clients') }}</li>

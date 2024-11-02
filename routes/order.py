@@ -11,17 +11,17 @@ from flask_babel import _
 
 from sqlalchemy import desc
 
-from models.user import AccessLevel
+from models.user import Role
 from models.product import Product, ProductOrder, ProductTransaction
 from models.client import Client
-from util import db, requires_access_level
+from util import db, requires_role
 from config import Config
 
 order_bp = Blueprint('order', __name__, url_prefix='/order')
 
 
 @order_bp.route('/')
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def start_page():
     session.pop('order_id', None)
 
@@ -44,7 +44,7 @@ def start_page():
 
 
 @order_bp.route('/add', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def add_page():
     if not 'order_id' in session:
         order = ProductOrder()
@@ -72,7 +72,7 @@ def add_page():
 
 
 @order_bp.route('/finish', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def finish_page():
     clients = Client.query.filter_by(is_deleted=False).order_by(desc(Client.id)).all()
 
@@ -108,7 +108,7 @@ def finish_page():
 
 
 @order_bp.route('/remove-from-order/<int:id>')
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def remove_from_order(id):
     product_t = ProductTransaction.query.get_or_404(id)
     db.session.delete(product_t)
@@ -117,7 +117,7 @@ def remove_from_order(id):
 
 
 @order_bp.route('/empty-order/<int:id>')
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def empty_order(id):
     if not 'order_id' in session:
         return redirect(url_for('.start_page'))
@@ -127,7 +127,7 @@ def empty_order(id):
 
 
 @order_bp.route('/cancel-order/<int:id>')
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def cancel_order(id):
     if not 'order_id' in session:
         return redirect(url_for('.start_page'))
@@ -139,7 +139,7 @@ def cancel_order(id):
 
 
 @order_bp.route('/make-payment/<int:id>')
-@requires_access_level(AccessLevel.OPERATOR)
+@requires_role(Role.OPERATOR)
 def make_payment(id):
     order = ProductOrder.query.get_or_404(id)
     order.is_paid = True

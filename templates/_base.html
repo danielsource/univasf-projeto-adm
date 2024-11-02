@@ -26,7 +26,7 @@
 		{% if g.current_user.is_authenticated and g.current_route != 'occurrence.add_page' %}
 		<small>
 			<a href="{{ url_for('occurrence.add_page', back=g.current_route) }}">⚠️ {{ _('Register occurrence') }}</a>
-			{% if g.current_user.access_level == AccessLevel.ADMIN %}
+			{% if g.current_user.role == Role.ADMIN %}
 			<select id="language" onchange="changeLang()">
 				{% for lang in languages %}
 				<option value="{{ lang }}" {% if lang == current_lang %}selected{% endif %}>{{ lang }}</option>
@@ -43,7 +43,7 @@
 		window.location.href = '{{ url_for('index.change_lang', lang='') }}' + selLang;
 	}
 
-	{% if g.current_user.is_authenticated and g.current_user.access_level == AccessLevel.OPERATOR or g.current_route == 'index.inactive_page' %}
+	{% if g.current_user.is_authenticated and g.current_user.role == Role.OPERATOR or g.current_route == 'index.inactive_page' %}
 	function checkWorkHours() {
 		const startHour = '{{ business_start_hour }}';
 		const endHour = '{{ business_end_hour }}';

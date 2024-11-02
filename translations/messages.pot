@@ -259,7 +259,7 @@ msgid "Username"
 msgstr ""
 
 #: templates/index-admin.html:13 templates/register.html:15
-msgid "Access level"
+msgid "Role"
 msgstr ""
 
 #: templates/client/clients.html:12 templates/index-admin.html:14

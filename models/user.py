@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from util import db
 
 
-class AccessLevel(Enum):
+class Role(Enum):
     ADMIN = 'adm'
     MANAGER = 'man'
     OPERATOR = 'op'
@@ -33,11 +33,11 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Text, unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
-    access_level = db.Column(db.Enum(AccessLevel), nullable=False)
+    role = db.Column(db.Enum(Role), nullable=False)
     occurrences = db.relationship('Occurrence', backref='user')
 
-    def allowed(self, *access_levels):
-        return self.access_level in access_levels
+    def allowed(self, *roles):
+        return self.role in roles
 
     def __repr__(self):
         return f'<User {self.username}>'

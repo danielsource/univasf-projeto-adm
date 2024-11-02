@@ -10,10 +10,10 @@
 	</label>
 	<br>
 	{% if g.first_user %}
-	<input type="hidden" name="access_level" value="adm">
+	<input type="hidden" name="role" value="adm">
 	{% else %}
-	<label for="access_level">{{ _('Access level') }}:
-		<select name="access_level" required>
+	<label for="role">{{ _('Role') }}:
+		<select name="role" required>
 			<option value="adm">{{ _('Admin') }}</option>
 			<option value="man">{{ _('Manager') }}</option>
 			<option value="op" selected>{{ _('Operator') }}</option>

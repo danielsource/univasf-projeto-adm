@@ -15,7 +15,7 @@ from flask_babel import Babel, _
 from flask_login import LoginManager, current_user, logout_user
 
 from config import Config
-from models.user import User, AccessLevel, LanguageConfig
+from models.user import User, Role, LanguageConfig
 from util import db, bcrypt, in_business_hours
 
 app = Flask(__name__)
@@ -45,7 +45,7 @@ def before_request():
     g.first_user = User.query.count() == 0
     g.current_route = request.endpoint
     if g.current_user.is_authenticated and \
-            g.current_user.access_level == AccessLevel.OPERATOR and \
+            g.current_user.role == Role.OPERATOR and \
             not in_business_hours():
         logout_user()
         return redirect(url_for('index.inactive_page'))
@@ -57,7 +57,7 @@ def inject_on_templates():
     return dict(get_locale=get_locale,
                 current_lang=lang_config.lang,
                 languages=Config.LANGUAGES,
-                AccessLevel=AccessLevel,
+                Role=Role,
                 business_start_hour=Config.BUSINESS_START_HOUR.strftime('%H:%M'),
                 business_end_hour=Config.BUSINESS_END_HOUR.strftime('%H:%M'))
 

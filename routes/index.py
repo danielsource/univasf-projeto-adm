@@ -16,8 +16,8 @@ from flask_login import (
         )
 
 from config import Config
-from models.user import User, AccessLevel, LanguageConfig
-from util import db, bcrypt, requires_access_level
+from models.user import User, Role, LanguageConfig
+from util import db, bcrypt, requires_role
 
 index_bp = Blueprint('index', __name__)
 
@@ -29,7 +29,7 @@ def start_page():
     elif not g.current_user.is_authenticated:
         flash(_('User is not autenticated, please login.'), 'info')
         return redirect(url_for('.login_page'))
-    elif g.current_user.access_level == AccessLevel.ADMIN:
+    elif g.current_user.role == Role.ADMIN:
         users = User.query.all()
         return render_template('index-admin.html', page_title=_('Admin page'), users=users)
     return render_template('index.html', page_title=_('Start page'))
@@ -37,23 +37,23 @@ def start_page():
 
 @index_bp.route('/register', methods=['GET', 'POST'])
 def register_page():
-    if not g.first_user and (not hasattr(g.current_user, 'access_level') or g.current_user.access_level != AccessLevel.ADMIN):
+    if not g.first_user and (not hasattr(g.current_user, 'role') or g.current_user.role != Role.ADMIN):
         flash(_('You do not have permission to access this page.'), 'error')
         return redirect(url_for('.error_page'))
 
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        access_level = request.form['access_level']
+        role = request.form['role']
 
         if User.query.filter_by(username=username).first():
             flash(_('Username already exists.'), 'error')
             return redirect(url_for('.register_page'))
 
-        access_level = AccessLevel(access_level)
+        role = Role(role)
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         new_user = User(username=username, password=hashed_password,
-                        access_level=access_level)
+                        role=role)
         db.session.add(new_user)
         db.session.commit()
         if g.first_user:
@@ -108,7 +108,7 @@ def error_page():
 
 
 @index_bp.route('/delete-user/<int:id>')
-@requires_access_level(AccessLevel.ADMIN)
+@requires_role(Role.ADMIN)
 def delete_user(id):
     user = User.query.get_or_404(id)
     db.session.delete(user)
@@ -118,7 +118,7 @@ def delete_user(id):
 
 
 @index_bp.route('/login-as/<int:id>')
-@requires_access_level(AccessLevel.ADMIN)
+@requires_role(Role.ADMIN)
 def login_as(id):
     user = User.query.get_or_404(id)
     logout_user()
@@ -127,7 +127,7 @@ def login_as(id):
 
 
 @index_bp.route('/change-lang/<lang>')
-@requires_access_level(AccessLevel.ADMIN)
+@requires_role(Role.ADMIN)
 def change_lang(lang):
     if lang in Config.LANGUAGES:
         lang_config = LanguageConfig.query.first()

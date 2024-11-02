@@ -2,7 +2,7 @@ import random
 
 from sqlalchemy import func
 
-from models.user import User, AccessLevel
+from models.user import User, Role
 from models.product import Product, ProductOrder, ProductTransaction
 from models.client import Client
 from util import db, bcrypt
@@ -14,13 +14,13 @@ from config import Config
 
 db.session.add(User(username='adm',
                     password=bcrypt.generate_password_hash("1234").decode('utf-8'),
-                    access_level=AccessLevel.ADMIN))
+                    role=Role.ADMIN))
 db.session.add(User(username='man',
                     password=bcrypt.generate_password_hash("1234").decode('utf-8'),
-                    access_level=AccessLevel.MANAGER))
+                    role=Role.MANAGER))
 db.session.add(User(username='op',
                     password=bcrypt.generate_password_hash("1234").decode('utf-8'),
-                    access_level=AccessLevel.OPERATOR))
+                    role=Role.OPERATOR))
 db.session.commit()
 
 #

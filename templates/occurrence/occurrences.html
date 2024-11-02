@@ -23,7 +23,7 @@
 			<td>
 				<a href="{{ url_for('.read_page', id=occ.id) }}">{{ _('View') }}</a>
 				<a href="{{ url_for('.resolve_page', id=occ.id) }}">{{ _('Mark as resolved') }}</a>
-				{% if g.current_user.access_level == AccessLevel.ADMIN %}
+				{% if g.current_user.role == Role.ADMIN %}
 				<a href="{{ url_for('.delete', id=occ.id) }}">{{ _('Delete') }}</a>
 				{% endif %}
 			</td>

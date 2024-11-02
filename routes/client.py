@@ -11,16 +11,16 @@ from flask_babel import _
 
 from sqlalchemy import desc
 
-from models.user import AccessLevel
+from models.user import Role
 from models.client import Client
-from util import db, requires_access_level
+from util import db, requires_role
 
 client_bp = Blueprint('client', __name__, url_prefix='/client')
 
 
 @client_bp.route('/')
-@requires_access_level(AccessLevel.MANAGER,
-                       AccessLevel.OPERATOR)
+@requires_role(Role.MANAGER,
+                       Role.OPERATOR)
 def start_page():
     clients = Client.query.order_by(desc(Client.id)).all()
     return render_template('client/clients.html', page_title=_('Clients'),
@@ -28,8 +28,8 @@ def start_page():
 
 
 @client_bp.route('/add', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.MANAGER,
-                       AccessLevel.OPERATOR)
+@requires_role(Role.MANAGER,
+                       Role.OPERATOR)
 def add_page():
     back = request.args.get('back')
     if back:
@@ -58,8 +58,8 @@ def add_page():
 
 
 @client_bp.route('/update/<int:id>', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.MANAGER,
-                       AccessLevel.OPERATOR)
+@requires_role(Role.MANAGER,
+                       Role.OPERATOR)
 def update_page(id):
     client = Client.query.get_or_404(id)
 
@@ -82,8 +82,8 @@ def update_page(id):
 
 
 @client_bp.route('/delete/<int:id>')
-@requires_access_level(AccessLevel.MANAGER,
-                       AccessLevel.OPERATOR)
+@requires_role(Role.MANAGER,
+                       Role.OPERATOR)
 def delete_client(id):
     client = Client.query.get_or_404(id)
     client.name = client.phone_number = None

@@ -13,15 +13,15 @@ from flask_babel import _
 
 from sqlalchemy import desc
 
-from models.user import AccessLevel
+from models.user import Role
 from models.product import Product, ProductOrder, ProductTransaction
-from util import db, requires_access_level
+from util import db, requires_role
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
 
 @product_bp.route('/')
-@requires_access_level(AccessLevel.MANAGER)
+@requires_role(Role.MANAGER)
 def start_page():
     products = Product.query.order_by(desc(Product.units_sold), desc(Product.id), Product.name).all()
     for product in products:
@@ -32,7 +32,7 @@ def start_page():
 
 
 @product_bp.route('/add', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.MANAGER)
+@requires_role(Role.MANAGER)
 def add_page():
     if request.method == 'POST':
         name = request.form['name']
@@ -53,7 +53,7 @@ def add_page():
 
 
 @product_bp.route('/update/<int:id>', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.MANAGER)
+@requires_role(Role.MANAGER)
 def update_page(id):
     product = Product.query.get_or_404(id)
 
@@ -84,7 +84,7 @@ def update_page(id):
 
 
 @product_bp.route('/transactions')
-@requires_access_level(AccessLevel.MANAGER)
+@requires_role(Role.MANAGER)
 def transactions_page():
     product_ts = ProductTransaction.query.order_by(desc(ProductTransaction.id)).all()
     return render_template('product/transactions.html', page_title=_('Stock changes'),
@@ -92,7 +92,7 @@ def transactions_page():
 
 
 @product_bp.route('/delete/<int:id>')
-@requires_access_level(AccessLevel.MANAGER)
+@requires_role(Role.MANAGER)
 def delete_product(id):
     product = Product.query.get_or_404(id)
     ProductTransaction.query.filter_by(product_id=id).delete(synchronize_session=False)
@@ -103,7 +103,7 @@ def delete_product(id):
 
 
 @product_bp.route('/download_arff_data')
-@requires_access_level(AccessLevel.MANAGER)
+@requires_role(Role.MANAGER)
 def download_arff_data():
     title = 'product_orders'
     product_names = [name[0] for name in db.session.query(Product.name).order_by(Product.id).all()]

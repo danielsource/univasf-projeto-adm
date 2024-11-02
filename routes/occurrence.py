@@ -12,27 +12,27 @@ from flask_babel import _
 
 from sqlalchemy import desc
 
-from models.user import AccessLevel
+from models.user import Role
 from models.occurrence import Occurrence, OccType
-from util import db, requires_access_level
+from util import db, requires_role
 
 occurrence_bp = Blueprint('occurrence', __name__, url_prefix='/occurrence')
 
 
 @occurrence_bp.route('/')
-@requires_access_level(AccessLevel.ADMIN,
-                       AccessLevel.MANAGER)
+@requires_role(Role.ADMIN,
+                       Role.MANAGER)
 def start_page():
     occurrences = Occurrence.query.order_by(Occurrence.is_solved, desc(Occurrence.id)).all()
     return render_template('occurrence/occurrences.html', page_title=_('Occurrences'),
-                           AccessLevel=AccessLevel,
+                           Role=Role,
                            occurrences=occurrences)
 
 
 @occurrence_bp.route('/add', methods=['GET', 'POST'])
-@requires_access_level(AccessLevel.ADMIN,
-                       AccessLevel.MANAGER,
-                       AccessLevel.OPERATOR)
+@requires_role(Role.ADMIN,
+                       Role.MANAGER,
+                       Role.OPERATOR)
 def add_page():
     back = request.args.get('back')
     if back:
@@ -59,8 +59,8 @@ def add_page():
 
 
 @occurrence_bp.route('/resolve/<int:id>')
-@requires_access_level(AccessLevel.ADMIN,
-                       AccessLevel.MANAGER)
+@requires_role(Role.ADMIN,
+                       Role.MANAGER)
 def resolve_page(id):
     occurrence = Occurrence.query.get_or_404(id)
     occurrence.is_solved = True
@@ -70,15 +70,15 @@ def resolve_page(id):
 
 
 @occurrence_bp.route('/read/<int:id>')
-@requires_access_level(AccessLevel.ADMIN,
-                       AccessLevel.MANAGER)
+@requires_role(Role.ADMIN,
+                       Role.MANAGER)
 def read_page(id):
     occurrence = Occurrence.query.get_or_404(id)
     return occurrence.text
 
 
 @occurrence_bp.route('/delete/<int:id>')
-@requires_access_level(AccessLevel.ADMIN)
+@requires_role(Role.ADMIN)
 def delete(id):
     occurrence = Occurrence.query.get_or_404(id)
     db.session.delete(occurrence)
